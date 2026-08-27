@@ -1,0 +1,41 @@
+{
+  "name": "infrastructure-change-review",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "packageManager": "bun@1.4.0",
+  "scripts": {
+    "dev": "vite",
+    "preview": "vite preview",
+    "build": "bun run typecheck && vite build",
+    "validate:fixtures": "bun run scripts/validate-fixtures.ts",
+    "check:boundaries": "bun run scripts/check-boundaries.ts",
+    "typecheck": "tsc -b --pretty false",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:contract": "vitest run --config vitest.contract.config.ts",
+    "test:red": "vitest run --config vitest.red.config.ts",
+    "test:e2e": "bun run build && playwright test",
+    "smoke:preview": "bun run scripts/smoke-preview.ts",
+    "check:foundation": "bun run validate:fixtures && bun run check:boundaries && bun run typecheck && bun run lint && bun run test:contract && bun run build && bun run smoke:preview"
+  },
+  "dependencies": {
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.10",
+    "@playwright/test": "1.62.1",
+    "@types/node": "24.13.3",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.5",
+    "@vitejs/plugin-react": "6.1.0",
+    "@vitest/coverage-v8": "4.1.11",
+    "typescript": "6.0.3",
+    "vite": "8.2.2",
+    "vitest": "4.1.11"
+  }
+}

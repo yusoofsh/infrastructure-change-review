@@ -1,0 +1,71 @@
+{
+  "policy_version": "1.0.0",
+  "policy_id": "synthetic-commerce-production",
+  "environment": "production",
+  "network": {
+    "database_ports": [5432],
+    "world_cidrs": ["0.0.0.0/0", "::/0"],
+    "approved_application_cidrs": ["10.42.16.0/20"]
+  },
+  "resources": {
+    "aws_db_instance.orders": {
+      "critical": true,
+      "stateful": true
+    },
+    "aws_secretsmanager_secret_version.database_url": {
+      "critical": true,
+      "stateful": false
+    },
+    "aws_ecs_service.api": {
+      "critical": true,
+      "stateful": false
+    },
+    "aws_ecs_service.checkout": {
+      "critical": true,
+      "stateful": false
+    }
+  },
+  "capacity": {
+    "minimum_desired_count_by_address": {
+      "aws_ecs_service.api": 2,
+      "aws_ecs_service.checkout": 2
+    }
+  },
+  "relative_cost": {
+    "instance_type_units": {
+      "t4g.medium": 2,
+      "m7g.large": 4,
+      "m7g.4xlarge": 32
+    },
+    "trigger": {
+      "minimum_multiplier": 4,
+      "minimum_unit_delta": 8
+    },
+    "approved_alternative_by_address": {
+      "aws_instance.worker": "m7g.large"
+    }
+  },
+  "blast_radius": {
+    "direct_dependent_weight": 2,
+    "indirect_dependent_weight": 1,
+    "critical_dependent_weight": 3,
+    "destructive_source_weight": 3,
+    "bands": {
+      "low": {
+        "minimum": 0,
+        "maximum": 3
+      },
+      "medium": {
+        "minimum": 4,
+        "maximum": 7
+      },
+      "high": {
+        "minimum": 8,
+        "maximum": 12
+      },
+      "critical": {
+        "minimum": 13
+      }
+    }
+  }
+}

@@ -32,35 +32,6 @@ bun run dev
 Use `bun run test`, not `bun test`; the latter selects Bun's test runner instead of the
 configured Vitest suite.
 
-## Cloudflare Pages
-
-The production target is a static Cloudflare Pages Direct Upload project named
-`infrastructure-change-review`. No Functions, bindings, runtime secrets, backend, or
-application network access are required.
-
-```bash
-bun run validate:cloudflare  # verify Pages config, build output, limits, and headers
-bun run cloudflare:create     # one-time project creation after Wrangler authentication
-bun run deploy:cloudflare    # run all gates, then deploy the main branch
-```
-
-Authenticate Wrangler before the first deployment with `wrangler login`. Direct Upload is
-intentional for the P0 release; the public GitHub repository remains the source of record.
-
-### GitHub Actions deployment
-
-GitHub Actions verifies every push. A separate production workflow deploys `main` after both
-repository secrets exist:
-
-- `CLOUDFLARE_ACCOUNT_ID`
-- `CLOUDFLARE_API_TOKEN` — a narrowly scoped token with **Account → Cloudflare Pages → Edit**
-
-Create the Direct Upload project once with `bun run cloudflare:create`, then push to `main` or
-run **Deploy Cloudflare Pages** manually. The serialized production workflow reruns the full
-foundation gate, verifies the named project exists in the configured account, and deploys the
-validated `dist` artifact. Missing credentials or a missing project fail visibly. Credentials
-are read only from GitHub Actions secrets and are never stored in the repository.
-
 ## Locked fixture summary
 
 | Classification | Count |
