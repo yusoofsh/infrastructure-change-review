@@ -23,8 +23,8 @@ Mode: autonomous, with verification after every three to four items or sooner wh
 
 ## WebMCP — August 30
 
-- [ ] Register the focused tool catalog with schemas, preconditions, and audit events.
-- [ ] Verify unsupported-browser fallback and visible UI synchronization.
+- [x] Register the focused tool catalog with schemas, preconditions, and audit events.
+- [x] Verify unsupported-browser fallback and visible UI synchronization.
 
 ## Decisions and report — August 31
 

@@ -3,7 +3,7 @@
 Turn a synthetic Terraform plan into a shared, inspectable review session where an agent
 gathers evidence and proposes safer changes while the engineer controls every decision.
 
-This is the product-interface checkpoint for The WebMCP Challenge. The working label is
+This is the WebMCP checkpoint for The WebMCP Challenge. The working label is
 intentional; the final public name is deferred until submission preparation.
 
 ## Safety boundary
@@ -15,12 +15,17 @@ intentional; the final public name is deferred until submission preparation.
 - The future simulation can conclude only that a change is ready for a new plan, never ready
   to apply.
 
-## Product interface checkpoint
+## WebMCP checkpoint
 
 The app shell, fixture contract, domain engine, and manual review workspace are green. Loading
 the bundled synthetic plan shows exclusive change counts, seven findings, a dependency graph with
 an accessible table, a redacted resource inspector, and an approval queue that waits for a human
-decision. CI runs `bun run test` as a release gate.
+decision.
+
+The same session backs a focused native WebMCP catalog. Browsers without `document.modelContext`
+or `navigator.modelContext` show a visible fallback and keep the manual workflow. Agent tool
+calls append audit events; they do not apply infrastructure. CI runs `bun run test` as a
+release gate.
 
 ```bash
 bun install --frozen-lockfile

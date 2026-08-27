@@ -71,3 +71,15 @@
 - The dependency graph ships a visible edge list and a configuration-dependencies table.
 - Mitigation options appear as a human-decision queue. Nothing is applied.
 - `bun run test` is the release gate and includes the review-session and review-shell specs.
+
+## 2026-08-27 — WebMCP checkpoint
+
+- App and tools share one review session. Native registration uses `document.modelContext`, then
+  `navigator.modelContext`. There is no fake polyfill.
+- The catalog is seven tools: load, summary, findings, select finding, inspect resource, list
+  dependencies, and list mitigations. Schemas and annotations are static. Unknown addresses and
+  findings fail closed without echoing untrusted input.
+- Unsupported browsers show a WebMCP fallback and keep the manual panels. Agent calls append
+  visible audit events. Manual load does not create audit events.
+- No apply, approve, reset, or Terraform execution tool is registered.
+- `bun run test` includes the WebMCP catalog, registration, and shell specs.
