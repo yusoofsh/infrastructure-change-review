@@ -11,10 +11,10 @@ Mode: autonomous, with verification after every three to four items or sooner wh
 
 ## Domain engine — August 28
 
-- [ ] Normalize plan actions and redact sensitive or unknown values.
-- [ ] Extract configuration references and build the dependency graph.
-- [ ] Calculate direct and transitive blast radius.
-- [ ] Implement all seven deterministic risk rules and mitigation options.
+- [x] Normalize plan actions and redact sensitive or unknown values.
+- [x] Extract configuration references and build the dependency graph.
+- [x] Calculate direct and transitive blast radius.
+- [x] Implement all seven deterministic risk rules and mitigation options.
 
 ## Product interface — August 29
 

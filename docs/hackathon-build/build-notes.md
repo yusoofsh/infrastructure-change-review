@@ -56,3 +56,9 @@
 - A separate, serialized GitHub Actions production workflow performs Pages Direct Uploads from
   `main` only after the full foundation gate passes. It fails visibly rather than provisioning
   a missing project or silently skipping deployment when credentials are absent.
+
+## 2026-08-27 — Domain engine checkpoint
+
+- Terraform changes now normalize with exclusive counts and recursive sensitive-value redaction.
+- Configuration references drive deterministic blast-radius scoring and seven ordered risk rules.
+- Mitigation options are registry-backed, and the domain specification is a foundation and CI gate.

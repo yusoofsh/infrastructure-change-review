@@ -3,7 +3,7 @@
 Turn a synthetic Terraform plan into a shared, inspectable review session where an agent
 gathers evidence and proposes safer changes while the engineer controls every decision.
 
-This is the local foundation checkpoint for The WebMCP Challenge. The working label is
+This is the domain-engine checkpoint for The WebMCP Challenge. The working label is
 intentional; the final public name is deferred until submission preparation.
 
 ## Safety boundary
@@ -15,17 +15,16 @@ intentional; the final public name is deferred until submission preparation.
 - The future simulation can conclude only that a change is ready for a new plan, never ready
   to apply.
 
-## Foundation checkpoint
+## Domain engine checkpoint
 
-The app shell and fixture contract are green. Domain specifications are intentionally red and
-fail only at typed `DOMAIN_NOT_IMPLEMENTED` boundaries. That is the expected tests-first state
-before the domain-engine checkpoint. CI asserts those exact typed boundaries without treating
-the intentionally red suite as a release failure.
+The app shell, fixture contract, and domain engine are green. Domain specifications verify
+normalization, redaction, dependency extraction, blast radius, seven risk rules, and deterministic
+mitigations. CI runs the domain suite as a release gate.
 
 ```bash
 bun install --frozen-lockfile
 bun run check:foundation  # expected to pass
-bun run test:red          # expected to fail in this checkpoint
+bun run test:red          # expected to pass
 bun run dev
 ```
 
