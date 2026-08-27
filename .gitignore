@@ -13,6 +13,7 @@ dist-ssr
 coverage
 playwright-report
 test-results
+.wrangler
 *.local
 
 # Editor directories and files

@@ -41,3 +41,15 @@
 - Two adversarial checkpoint reviews found no unresolved blocker or high-impact issue in the
   implemented foundation. UI text escaping, report escaping, WebMCP untrusted annotations, and
   decision-state injection tests remain explicit gates for the later surfaces they exercise.
+
+## 2026-08-27 — Publication and deployment preparation
+
+- The user approved creating the public GitHub repository and deploying the static application
+  to Cloudflare.
+- Cloudflare Pages Direct Upload is the P0 target, with the public GitHub repository remaining
+  the source of record. The project has no Functions, bindings, runtime secrets, or backend.
+- Wrangler 4.127.0 is pinned in the lockfile. `wrangler.jsonc`, one-time project creation, gated
+  deployment, artifact-limit checks, and production-header validation are reproducible scripts.
+- The artifact validator rejects both Pages Functions and a Pages Worker so deployment cannot
+  silently cross the locked client-only boundary.
+- The full offline foundation gate remains green after adding deployment configuration.
