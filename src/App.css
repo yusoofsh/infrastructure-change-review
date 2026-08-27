@@ -74,6 +74,50 @@ h1 {
   box-shadow: 0 0 0 0.35rem rgb(34 211 238 / 12%);
 }
 
+.status-dot.warning {
+  background: #fbbf24;
+  box-shadow: 0 0 0 0.35rem rgb(251 191 36 / 12%);
+}
+
+.safety-card + .safety-card {
+  margin-top: 1rem;
+}
+
+.audit-panel {
+  margin-top: 1rem;
+}
+
+.audit-list {
+  margin: 0.85rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.audit-list li {
+  color: #cbd5e1;
+  line-height: 1.55;
+}
+
+.audit-outcome {
+  display: inline-block;
+  margin-right: 0.55rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.audit-outcome-ok {
+  color: #064e3b;
+  background: #6ee7b7;
+}
+
+.audit-outcome-error {
+  color: #881337;
+  background: #fda4af;
+}
+
 .checkpoint-card {
   max-width: 48rem;
   margin-top: 1rem;

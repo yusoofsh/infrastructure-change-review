@@ -1,9 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import type { MitigationOption } from '../domain/recommendations/catalog'
 import type { Finding } from '../domain/risks/types'
 import type { NormalizedResourceChange } from '../domain/terraform/normalize'
 import {
-  createEmptySession,
   type LoadedReviewSession,
   loadBundledReview,
   type ReviewSession,
@@ -35,9 +34,13 @@ function optionsForFinding(
   return session.snapshot.options.filter((option) => option.findingId === finding.id)
 }
 
-export function ReviewWorkspace() {
-  const [session, setSession] = useState<ReviewSession>(createEmptySession)
-
+export function ReviewWorkspace({
+  session,
+  onSessionChange,
+}: {
+  session: ReviewSession
+  onSessionChange: (session: ReviewSession) => void
+}) {
   if (session.status === 'empty') {
     return (
       <section className="empty-state" aria-labelledby="empty-title">
@@ -51,7 +54,7 @@ export function ReviewWorkspace() {
         <button
           type="button"
           className="primary-action"
-          onClick={() => setSession(loadBundledReview())}
+          onClick={() => onSessionChange(loadBundledReview())}
         >
           Load synthetic plan
         </button>
@@ -59,7 +62,7 @@ export function ReviewWorkspace() {
     )
   }
 
-  return <LoadedReview session={session} onSessionChange={setSession} />
+  return <LoadedReview session={session} onSessionChange={onSessionChange} />
 }
 
 function LoadedReview({
@@ -67,7 +70,7 @@ function LoadedReview({
   onSessionChange,
 }: {
   session: LoadedReviewSession
-  onSessionChange: (session: LoadedReviewSession) => void
+  onSessionChange: (session: ReviewSession) => void
 }) {
   const resource = selectedResource(session)
   const finding = selectedFinding(session)
