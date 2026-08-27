@@ -47,6 +47,9 @@ export const REVIEW_TOOL_NAMES = [
   'inspect_resource',
   'list_dependencies',
   'list_mitigation_options',
+  'list_decisions',
+  'get_review_outcome',
+  'get_review_report',
 ] as const
 
 export type ReviewToolName = (typeof REVIEW_TOOL_NAMES)[number]

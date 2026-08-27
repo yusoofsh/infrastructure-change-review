@@ -37,7 +37,16 @@ describe('review session', () => {
       'COST001_SIZE_CLASS_JUMP',
       'BLAST001_CRITICAL_TRANSITIVE_IMPACT',
     ])
-    expect(session.snapshot.edges).toHaveLength(6)
+    expect(session.decisions).toEqual({
+      'cancel-rds-replacement-and-stage-migration': 'pending',
+      'enable-rds-deletion-safeguards': 'pending',
+      'restrict-database-to-application-cidr': 'pending',
+      'restore-s3-public-access-controls': 'pending',
+      'preserve-api-minimum-capacity': 'pending',
+      'use-approved-worker-size': 'pending',
+      'remove-destructive-blast-radius-root': 'pending',
+    })
+    expect(session.resetPending).toBe(false)
     expect(session.snapshot.options.map(({ id }) => id)).toEqual(
       expect.arrayContaining([
         'cancel-rds-replacement-and-stage-migration',

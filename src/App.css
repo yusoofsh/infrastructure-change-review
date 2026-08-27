@@ -274,6 +274,52 @@ h1 {
   font-size: 0.88rem;
 }
 
+.decision-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.65rem;
+}
+
+.decision-actions button {
+  color: #ecfeff;
+  background: rgb(8 47 73 / 70%);
+  border: 1px solid #22d3ee;
+  border-radius: 0.75rem;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+}
+
+.decision-actions button.selected,
+.decision-actions button.primary-action {
+  background: #155e75;
+}
+
+.decision-actions .primary-action {
+  margin-top: 0;
+}
+
+.overlay-outcome {
+  margin: 0.85rem 0 0;
+  font-weight: 650;
+}
+
+.overlay-outcome-blocked {
+  color: #fda4af;
+}
+
+.overlay-outcome-needs_review {
+  color: #fde68a;
+}
+
+.overlay-outcome-ready_for_new_plan {
+  color: #6ee7b7;
+}
+
+.overlay-actions p {
+  flex: 1 0 100%;
+}
+
 @media (max-width: 40rem) {
   .app-shell {
     width: min(100% - 1.25rem, 74rem);

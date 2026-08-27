@@ -96,18 +96,27 @@ const mitigationRegistry: Readonly<Record<string, readonly MitigationDefinition[
       id: 'restore-s3-public-access-controls',
       title: 'Restore S3 public access controls',
       operations: (addresses) => {
-        const address =
+        const accessBlockAddress =
           addresses.find((candidate) =>
             candidate.startsWith('aws_s3_bucket_public_access_block.'),
           ) ?? 'aws_s3_bucket_public_access_block.assets'
-        return publicAccessBlockAttributes.map(
-          (attribute): PatchOperation => ({
-            kind: 'set_attribute',
-            address,
-            path: [attribute],
-            value: true,
-          }),
-        )
+        const policyAddress =
+          addresses.find((candidate) => candidate.startsWith('aws_s3_bucket_policy.')) ??
+          'aws_s3_bucket_policy.assets'
+        return [
+          ...publicAccessBlockAttributes.map(
+            (attribute): PatchOperation => ({
+              kind: 'set_attribute',
+              address: accessBlockAddress,
+              path: [attribute],
+              value: true,
+            }),
+          ),
+          {
+            kind: 'cancel_change',
+            address: policyAddress,
+          },
+        ]
       },
     },
   ],

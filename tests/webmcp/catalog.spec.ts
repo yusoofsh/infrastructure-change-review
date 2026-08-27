@@ -55,6 +55,9 @@ describe('review tool catalog', () => {
       'inspect_resource',
       'list_dependencies',
       'list_mitigation_options',
+      'list_decisions',
+      'get_review_outcome',
+      'get_review_report',
     ])
     expect(reviewToolMetadata.map(({ name }) => name)).toEqual(REVIEW_TOOL_NAMES)
 
@@ -84,6 +87,9 @@ describe('review tool catalog', () => {
       inspect_resource: false,
       list_dependencies: true,
       list_mitigation_options: true,
+      list_decisions: true,
+      get_review_outcome: true,
+      get_review_report: true,
     })
   })
 
@@ -96,6 +102,9 @@ describe('review tool catalog', () => {
       'inspect_resource',
       'list_dependencies',
       'list_mitigation_options',
+      'list_decisions',
+      'get_review_outcome',
+      'get_review_report',
     ] as const) {
       const input =
         name === 'select_finding'
@@ -154,6 +163,18 @@ describe('review tool catalog', () => {
         'use-approved-worker-size',
       ]),
     )
+
+    const decisions = expectOk(executeReviewTool('list_decisions', {}, loaded).result) as {
+      decisions: Array<{ optionId: string; status: string }>
+    }
+    expect(decisions.decisions.every((decision) => decision.status === 'pending')).toBe(true)
+
+    const outcome = expectOk(executeReviewTool('get_review_outcome', {}, loaded).result) as {
+      outcome: string
+      applyPath: boolean
+    }
+    expect(outcome.outcome).toBe('blocked')
+    expect(outcome.applyPath).toBe(false)
   })
 
   it('selects a finding and inspects a redacted resource for UI synchronization', () => {

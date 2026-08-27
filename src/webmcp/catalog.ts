@@ -3,6 +3,8 @@ import type { MitigationOption } from '../domain/recommendations/catalog'
 import type { Finding } from '../domain/risks/types'
 import type { NormalizedResourceChange } from '../domain/terraform/normalize'
 import type { DependencyEdge } from '../domain/terraform/references'
+import { simulateOverlay } from '../review/overlay'
+import { buildReviewReport } from '../review/report'
 import {
   type LoadedReviewSession,
   loadBundledReview,
@@ -110,6 +112,28 @@ export const reviewToolMetadata: readonly ReviewToolMetadata[] = [
     name: 'list_mitigation_options',
     title: 'List mitigation options',
     description: 'List recommended mitigation options. None are applied; a human must decide.',
+    inputSchema: emptyInputSchema,
+    annotations: untrusted,
+  },
+  {
+    name: 'list_decisions',
+    title: 'List decisions',
+    description:
+      'List human decisions for recommended mitigations. Agents cannot record decisions.',
+    inputSchema: emptyInputSchema,
+    annotations: untrusted,
+  },
+  {
+    name: 'get_review_outcome',
+    title: 'Get review outcome',
+    description: 'Return the simulation overlay outcome. The overlay never applies infrastructure.',
+    inputSchema: emptyInputSchema,
+    annotations: untrusted,
+  },
+  {
+    name: 'get_review_report',
+    title: 'Get review report',
+    description: 'Return the same simulation report a reviewer can download. Nothing is applied.',
     inputSchema: emptyInputSchema,
     annotations: untrusted,
   },
@@ -296,6 +320,57 @@ function listMitigations(input: unknown, session: ReviewSession): ToolExecution 
   }
 }
 
+function listDecisions(input: unknown, session: ReviewSession): ToolExecution {
+  parseInput(EmptyInput, input)
+  const loaded = requireLoaded(session)
+  return {
+    session: loaded,
+    summary: 'Listed human decisions',
+    result: {
+      ok: true,
+      data: {
+        decisions: loaded.snapshot.options.map((option) => ({
+          optionId: option.id,
+          findingId: option.findingId,
+          status: loaded.decisions[option.id] ?? 'pending',
+        })),
+      },
+    },
+  }
+}
+
+function getOutcome(input: unknown, session: ReviewSession): ToolExecution {
+  parseInput(EmptyInput, input)
+  const loaded = requireLoaded(session)
+  const overlay = simulateOverlay(loaded)
+  return {
+    session: loaded,
+    summary: 'Returned the review outcome',
+    result: {
+      ok: true,
+      data: {
+        outcome: overlay.outcome,
+        applyPath: false,
+        remainingFindings: overlay.remainingFindings.map(({ ruleId }) => ruleId),
+        overlayCounts: asJson(overlay.plan.counts),
+      },
+    },
+  }
+}
+
+function getReport(input: unknown, session: ReviewSession): ToolExecution {
+  parseInput(EmptyInput, input)
+  const loaded = requireLoaded(session)
+  return {
+    session: loaded,
+    summary: 'Returned the review report',
+    result: {
+      ok: true,
+      data: asJson(buildReviewReport(loaded)),
+    },
+  }
+}
+
 const executors: Record<ReviewToolName, (input: unknown, session: ReviewSession) => ToolExecution> =
   {
     load_synthetic_plan: loadPlan,
@@ -305,6 +380,9 @@ const executors: Record<ReviewToolName, (input: unknown, session: ReviewSession)
     inspect_resource: inspectResource,
     list_dependencies: listDependencies,
     list_mitigation_options: listMitigations,
+    list_decisions: listDecisions,
+    get_review_outcome: getOutcome,
+    get_review_report: getReport,
   }
 
 export function executeReviewTool(

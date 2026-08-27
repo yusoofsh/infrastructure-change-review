@@ -8,6 +8,10 @@ import { type DependencyEdge, extractDependencyEdges } from '../domain/terraform
 import policyFixture from '../fixtures/aws-review-policy.json'
 import planFixture from '../fixtures/aws-risky-plan.json'
 
+export type DecisionStatus = 'pending' | 'accepted' | 'rejected' | 'deferred'
+
+const decisionStatuses = new Set<string>(['pending', 'accepted', 'rejected', 'deferred'])
+
 export interface ReviewSnapshot {
   plan: NormalizedPlan
   policy: ReviewPolicy
@@ -28,6 +32,8 @@ export interface LoadedReviewSession {
   selectedResourceAddress: string | null
   selectedFindingId: string | null
   snapshot: ReviewSnapshot
+  decisions: Readonly<Record<string, DecisionStatus>>
+  resetPending: boolean
 }
 
 export type ReviewSession = EmptyReviewSession | LoadedReviewSession
@@ -39,6 +45,10 @@ export function createEmptySession(): EmptyReviewSession {
     selectedFindingId: null,
     snapshot: null,
   }
+}
+
+function pendingDecisions(options: readonly MitigationOption[]): Record<string, DecisionStatus> {
+  return Object.fromEntries(options.map((option) => [option.id, 'pending']))
 }
 
 export function loadBundledReview(): LoadedReviewSession {
@@ -59,6 +69,8 @@ export function loadBundledReview(): LoadedReviewSession {
       findings,
       options,
     },
+    decisions: pendingDecisions(options),
+    resetPending: false,
   }
 }
 
@@ -95,4 +107,76 @@ export function selectFinding(session: ReviewSession, findingId: string): Review
     selectedFindingId: findingId,
     selectedResourceAddress: finding.resourceAddresses[0] ?? session.selectedResourceAddress,
   }
+}
+
+export function recordDecision(
+  session: EmptyReviewSession,
+  optionId: string,
+  status: DecisionStatus,
+): EmptyReviewSession
+export function recordDecision(
+  session: LoadedReviewSession,
+  optionId: string,
+  status: DecisionStatus,
+): LoadedReviewSession
+export function recordDecision(
+  session: ReviewSession,
+  optionId: string,
+  status: DecisionStatus,
+): ReviewSession
+export function recordDecision(
+  session: ReviewSession,
+  optionId: string,
+  status: DecisionStatus,
+): ReviewSession {
+  if (session.status !== 'loaded') {
+    return session
+  }
+  if (!decisionStatuses.has(status)) {
+    return session
+  }
+  const known = session.snapshot.options.some((option) => option.id === optionId)
+  if (!known) {
+    return session
+  }
+  return {
+    ...session,
+    decisions: {
+      ...session.decisions,
+      [optionId]: status,
+    },
+  }
+}
+
+export function beginReset(session: EmptyReviewSession): EmptyReviewSession
+export function beginReset(session: LoadedReviewSession): LoadedReviewSession
+export function beginReset(session: ReviewSession): ReviewSession
+export function beginReset(session: ReviewSession): ReviewSession {
+  if (session.status !== 'loaded') {
+    return session
+  }
+  return {
+    ...session,
+    resetPending: true,
+  }
+}
+
+export function cancelReset(session: EmptyReviewSession): EmptyReviewSession
+export function cancelReset(session: LoadedReviewSession): LoadedReviewSession
+export function cancelReset(session: ReviewSession): ReviewSession
+export function cancelReset(session: ReviewSession): ReviewSession {
+  if (session.status !== 'loaded') {
+    return session
+  }
+  return {
+    ...session,
+    resetPending: false,
+  }
+}
+
+export function confirmReset(session: ReviewSession): ReviewSession {
+  if (session.status !== 'loaded' || !session.resetPending) {
+    return session
+  }
+  return createEmptySession()
 }

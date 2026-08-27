@@ -67,7 +67,7 @@ describe('webmcp registration', () => {
       return
     }
     expect(result.host).toBe('navigator')
-    expect(tools).toHaveLength(7)
+    expect(tools).toHaveLength(10)
   })
 
   it('prefers document.modelContext over navigator.modelContext', async () => {
@@ -82,7 +82,7 @@ describe('webmcp registration', () => {
       return
     }
     expect(result.host).toBe('document')
-    expect(documentHost.tools).toHaveLength(7)
+    expect(documentHost.tools).toHaveLength(10)
     expect(navigatorHost.tools).toHaveLength(0)
   })
 

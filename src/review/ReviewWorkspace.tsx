@@ -2,10 +2,18 @@ import { useMemo } from 'react'
 import type { MitigationOption } from '../domain/recommendations/catalog'
 import type { Finding } from '../domain/risks/types'
 import type { NormalizedResourceChange } from '../domain/terraform/normalize'
+import type { OverlayOutcome } from './overlay'
+import { simulateOverlay } from './overlay'
+import { downloadReviewReport } from './report'
 import {
+  beginReset,
+  cancelReset,
+  confirmReset,
+  type DecisionStatus,
   type LoadedReviewSession,
   loadBundledReview,
   type ReviewSession,
+  recordDecision,
   selectFinding,
   selectResource,
 } from './session'
@@ -32,6 +40,12 @@ function optionsForFinding(
     return []
   }
   return session.snapshot.options.filter((option) => option.findingId === finding.id)
+}
+
+const outcomeLabels: Record<OverlayOutcome, string> = {
+  blocked: 'Blocked',
+  needs_review: 'Needs review',
+  ready_for_new_plan: 'Ready for a new plan',
 }
 
 export function ReviewWorkspace({
@@ -76,6 +90,7 @@ function LoadedReview({
   const finding = selectedFinding(session)
   const queued = optionsForFinding(session, finding)
   const counts = session.snapshot.plan.counts
+  const overlay = useMemo(() => simulateOverlay(session), [session])
   const graphItems = useMemo(
     () =>
       [...session.snapshot.edges].sort((left, right) =>
@@ -191,14 +206,87 @@ function LoadedReview({
         <h2 id="queue-title">Approval queue</h2>
         <p>Awaiting human decision. Recommended options are listed. None are applied.</p>
         <ul className="queue-list">
-          {queued.map((option) => (
-            <li key={option.id}>
-              <p className="queue-id">{option.id}</p>
-              <p>{option.title}</p>
-            </li>
-          ))}
+          {queued.map((option) => {
+            const status = session.decisions[option.id] ?? 'pending'
+            return (
+              <li key={option.id}>
+                <p className="queue-id">{option.id}</p>
+                <p>{option.title}</p>
+                <div className="decision-actions">
+                  {(['accepted', 'rejected', 'deferred'] as const).map((decision) => (
+                    <button
+                      key={decision}
+                      type="button"
+                      className={status === decision ? 'selected' : undefined}
+                      aria-pressed={status === decision}
+                      onClick={() => onSessionChange(recordDecision(session, option.id, decision))}
+                    >
+                      {decisionLabel(decision)}
+                    </button>
+                  ))}
+                </div>
+              </li>
+            )
+          })}
         </ul>
+      </section>
+
+      <section className="review-panel" aria-labelledby="overlay-title">
+        <h2 id="overlay-title">Simulation overlay</h2>
+        <p>
+          This overlay is a simulation. It can conclude that a change is ready for a new plan. It
+          cannot apply infrastructure. Nothing is applied.
+        </p>
+        <p className={`overlay-outcome overlay-outcome-${overlay.outcome}`}>
+          {outcomeLabels[overlay.outcome]}
+        </p>
+        {overlay.remainingFindings.length === 0 ? (
+          <p>No remaining findings.</p>
+        ) : (
+          <ul className="queue-list">
+            {overlay.remainingFindings.map((item) => (
+              <li key={item.id}>{item.ruleId}</li>
+            ))}
+          </ul>
+        )}
+        <div className="decision-actions overlay-actions">
+          <button
+            type="button"
+            className="primary-action"
+            onClick={() => downloadReviewReport(session)}
+          >
+            Download review report
+          </button>
+          {session.resetPending ? (
+            <>
+              <p>
+                Reset this review? Loaded plan and decisions will be cleared. This does not change
+                infrastructure.
+              </p>
+              <button type="button" onClick={() => onSessionChange(confirmReset(session))}>
+                Confirm reset
+              </button>
+              <button type="button" onClick={() => onSessionChange(cancelReset(session))}>
+                Cancel reset
+              </button>
+            </>
+          ) : (
+            <button type="button" onClick={() => onSessionChange(beginReset(session))}>
+              Reset review
+            </button>
+          )}
+        </div>
       </section>
     </div>
   )
+}
+
+function decisionLabel(status: Exclude<DecisionStatus, 'pending'>): string {
+  if (status === 'accepted') {
+    return 'Accept'
+  }
+  if (status === 'rejected') {
+    return 'Reject'
+  }
+  return 'Defer'
 }
