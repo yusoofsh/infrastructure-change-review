@@ -36,7 +36,10 @@ async function assertPathAbsent(path: string, capability: string): Promise<void>
   throw new Error(`Cloudflare artifact must not contain ${capability}: ${path}`)
 }
 
-const configurationRaw = await readFile('wrangler.jsonc', 'utf8')
+const [configurationRaw, deploymentWorkflow] = await Promise.all([
+  readFile('wrangler.jsonc', 'utf8'),
+  readFile('.github/workflows/deploy-cloudflare.yml', 'utf8'),
+])
 let configuration: unknown
 try {
   configuration = JSON.parse(configurationRaw) as unknown
@@ -44,6 +47,28 @@ try {
   throw new Error('wrangler.jsonc must remain valid JSONC-compatible JSON')
 }
 pagesConfigurationSchema.parse(configuration)
+
+for (const requiredWorkflowControl of [
+  'branches:\n      - main',
+  'permissions:\n  contents: read',
+  'group: cloudflare-pages-production',
+  'cancel-in-progress: false',
+  "if: github.ref == 'refs/heads/main'",
+  'persist-credentials: false',
+  'bun run check:foundation',
+  'secrets.CLOUDFLARE_ACCOUNT_ID',
+  'secrets.CLOUDFLARE_API_TOKEN',
+  'wrangler pages project list --json',
+  '--project-name=infrastructure-change-review',
+  '--commit-dirty=false',
+]) {
+  if (!deploymentWorkflow.includes(requiredWorkflowControl)) {
+    throw new Error(`Cloudflare deployment workflow is missing: ${requiredWorkflowControl}`)
+  }
+}
+if (deploymentWorkflow.includes('bun run cloudflare:create')) {
+  throw new Error('Cloudflare deployment workflow must not provision a persistent Pages project')
+}
 
 await Promise.all([
   assertPathAbsent('functions', 'Pages Functions'),
@@ -81,5 +106,5 @@ for (const requiredDirective of [
 }
 
 console.info(
-  `Cloudflare Pages artifact validated (${files.length} files, restrictive headers, no runtime bindings)`,
+  `Cloudflare Pages release validated (${files.length} files, guarded GitHub workflow, restrictive headers, no runtime bindings)`,
 )

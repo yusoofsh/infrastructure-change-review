@@ -47,6 +47,20 @@ bun run deploy:cloudflare    # run all gates, then deploy the main branch
 Authenticate Wrangler before the first deployment with `wrangler login`. Direct Upload is
 intentional for the P0 release; the public GitHub repository remains the source of record.
 
+### GitHub Actions deployment
+
+GitHub Actions verifies every push. A separate production workflow deploys `main` after both
+repository secrets exist:
+
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_API_TOKEN` — a narrowly scoped token with **Account → Cloudflare Pages → Edit**
+
+Create the Direct Upload project once with `bun run cloudflare:create`, then push to `main` or
+run **Deploy Cloudflare Pages** manually. The serialized production workflow reruns the full
+foundation gate, verifies the named project exists in the configured account, and deploys the
+validated `dist` artifact. Missing credentials or a missing project fail visibly. Credentials
+are read only from GitHub Actions secrets and are never stored in the repository.
+
 ## Locked fixture summary
 
 | Classification | Count |

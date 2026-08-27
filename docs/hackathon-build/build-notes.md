@@ -53,3 +53,6 @@
 - The artifact validator rejects both Pages Functions and a Pages Worker so deployment cannot
   silently cross the locked client-only boundary.
 - The full offline foundation gate remains green after adding deployment configuration.
+- A separate, serialized GitHub Actions production workflow performs Pages Direct Uploads from
+  `main` only after the full foundation gate passes. It fails visibly rather than provisioning
+  a missing project or silently skipping deployment when credentials are absent.
