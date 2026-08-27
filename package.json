@@ -22,7 +22,7 @@
     "validate:cloudflare": "bun run scripts/validate-cloudflare.ts",
     "cloudflare:create": "wrangler pages project create infrastructure-change-review --production-branch=main --compatibility-date=2026-08-27",
     "deploy:cloudflare": "bun run check:foundation && wrangler pages deploy dist --project-name=infrastructure-change-review --branch=main",
-    "check:foundation": "bun run validate:fixtures && bun run check:boundaries && bun run typecheck && bun run lint && bun run test:contract && bun run build && bun run smoke:preview && bun run validate:cloudflare"
+    "check:foundation": "bun run validate:fixtures && bun run check:boundaries && bun run typecheck && bun run lint && bun run test:contract && bun run test:red && bun run build && bun run smoke:preview && bun run validate:cloudflare"
   },
   "dependencies": {
     "react": "19.2.8",

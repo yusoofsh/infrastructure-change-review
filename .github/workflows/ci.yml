@@ -24,6 +24,7 @@ jobs:
       - run: bun run typecheck
       - run: bun run lint
       - run: bun run test:contract
+      - run: bun run test:red
       - run: bun run build
       - run: bun run smoke:preview
       - run: bun run validate:cloudflare
