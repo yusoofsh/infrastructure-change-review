@@ -62,3 +62,12 @@
 - Terraform changes now normalize with exclusive counts and recursive sensitive-value redaction.
 - Configuration references drive deterministic blast-radius scoring and seven ordered risk rules.
 - Mitigation options are registry-backed, and the domain specification is a foundation and CI gate.
+
+## 2026-08-27 — Product interface checkpoint
+
+- The review workspace starts empty. Loading the bundled synthetic plan fills summary, findings,
+  graph, inspector, and approval-queue panels from the domain engine.
+- Plan-derived strings render as text. The worker-tag injection payload stays escaped.
+- The dependency graph ships a visible edge list and a configuration-dependencies table.
+- Mitigation options appear as a human-decision queue. Nothing is applied.
+- `bun run test` is the release gate and includes the review-session and review-shell specs.

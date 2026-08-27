@@ -18,8 +18,8 @@ Mode: autonomous, with verification after every three to four items or sooner wh
 
 ## Product interface — August 29
 
-- [ ] Build the empty state, summary, findings, graph, inspector, and approval queue shell.
-- [ ] Complete the manual analysis workflow and accessible graph table fallback.
+- [x] Build the empty state, summary, findings, graph, inspector, and approval queue shell.
+- [x] Complete the manual analysis workflow and accessible graph table fallback.
 
 ## WebMCP — August 30
 
