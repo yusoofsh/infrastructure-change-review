@@ -22,7 +22,7 @@
     "validate:cloudflare": "bun run scripts/validate-cloudflare.ts",
     "cloudflare:create": "wrangler pages project create infrastructure-change-review --production-branch=main --compatibility-date=2026-08-27",
     "deploy:cloudflare": "bun run check:foundation && wrangler pages deploy dist --project-name=infrastructure-change-review --branch=main",
-    "check:foundation": "bun run validate:fixtures && bun run check:boundaries && bun run typecheck && bun run lint && bun run test:contract && bun run test:red && bun run build && bun run smoke:preview && bun run validate:cloudflare"
+    "check:foundation": "bun run validate:fixtures && bun run check:boundaries && bun run typecheck && bun run lint && bun run test && bun run build && bun run smoke:preview && bun run validate:cloudflare"
   },
   "dependencies": {
     "react": "19.2.8",
@@ -32,11 +32,14 @@
   "devDependencies": {
     "@biomejs/biome": "2.5.10",
     "@playwright/test": "1.62.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.6",
     "@types/node": "24.13.3",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.5",
     "@vitejs/plugin-react": "6.1.0",
     "@vitest/coverage-v8": "4.1.11",
+    "happy-dom": "^20.11.12",
     "typescript": "6.0.3",
     "vite": "8.2.2",
     "vitest": "4.1.11",

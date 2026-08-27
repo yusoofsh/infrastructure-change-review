@@ -1,4 +1,5 @@
 import './App.css'
+import { ReviewWorkspace } from './review/ReviewWorkspace'
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
       <section className="safety-card" aria-labelledby="safety-title">
         <span className="status-dot" aria-hidden="true" />
         <div>
-          <h2 id="safety-title">Simulation only—no infrastructure execution</h2>
+          <h2 id="safety-title">Simulation only. No infrastructure execution.</h2>
           <p>
             This project uses bundled synthetic data. It has no Terraform, shell, cloud API,
             credential, or real infrastructure mutation path.
@@ -21,14 +22,7 @@ function App() {
         </div>
       </section>
 
-      <section className="checkpoint-card" aria-labelledby="checkpoint-title">
-        <p className="checkpoint-label">Foundation checkpoint</p>
-        <h2 id="checkpoint-title">Fixture contract is ready for the domain engine</h2>
-        <p>
-          The interactive review workflow arrives in the next checkpoints. The current build proves
-          the client-only shell and synthetic-input safety boundary.
-        </p>
-      </section>
+      <ReviewWorkspace />
     </main>
   )
 }
