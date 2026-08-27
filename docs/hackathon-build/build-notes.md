@@ -83,3 +83,14 @@
   visible audit events. Manual load does not create audit events.
 - No apply, approve, reset, or Terraform execution tool is registered.
 - `bun run test` includes the WebMCP catalog, registration, and shell specs.
+
+## 2026-08-27 — Decisions and report checkpoint
+
+- Human reviewers accept, reject, or defer recommended mitigations. Agents can read those
+  decisions and the report; they cannot record them or reset the session.
+- The overlay replays accepted operations on a copy of the plan. It can conclude that a change
+  is ready for a new plan. It never concludes that a change is ready to apply.
+- Reset requires an in-UI confirmation. The JSON report omits secrets and has no apply path.
+- The S3 restore mitigation also cancels the public bucket-policy change so AWS002 can clear.
+- Playwright covers load → decide → overlay → download. `bun run check:foundation` runs that
+  journey after the production build.

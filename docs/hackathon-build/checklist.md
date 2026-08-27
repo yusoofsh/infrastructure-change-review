@@ -28,8 +28,8 @@ Mode: autonomous, with verification after every three to four items or sooner wh
 
 ## Decisions and report — August 31
 
-- [ ] Add human-only decisions, overlay simulation, deterministic outcomes, and report download.
-- [ ] Complete the first Playwright review journey.
+- [x] Add human-only decisions, overlay simulation, deterministic outcomes, and report download.
+- [x] Complete the first Playwright review journey.
 
 ## Hardening and delivery — September 1–3
 
