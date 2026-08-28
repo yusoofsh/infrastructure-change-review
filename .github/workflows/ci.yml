@@ -7,10 +7,10 @@ on:
 permissions:
   contents: read
 
-jobs:
-  verify:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    jobs:
+      verify:
+        runs-on: ubuntu-24.04
+        timeout-minutes: 25
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
@@ -23,7 +23,9 @@ jobs:
       - run: bun run check:boundaries
       - run: bun run typecheck
       - run: bun run lint
-      - run: bun run test:contract
+      - run: bun run test
       - run: bun run build
+      - run: bunx playwright install --with-deps chromium
+      - run: bun run test:e2e
       - run: bun run smoke:preview
       - run: bun run validate:cloudflare

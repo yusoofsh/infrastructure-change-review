@@ -3,7 +3,7 @@
 Turn a synthetic Terraform plan into a shared, inspectable review session where an agent
 gathers evidence and proposes safer changes while the engineer controls every decision.
 
-This is the local foundation checkpoint for The WebMCP Challenge. The working label is
+This is the decisions-and-report checkpoint for The WebMCP Challenge. The working label is
 intentional; the final public name is deferred until submission preparation.
 
 ## Safety boundary
@@ -15,17 +15,30 @@ intentional; the final public name is deferred until submission preparation.
 - The future simulation can conclude only that a change is ready for a new plan, never ready
   to apply.
 
-## Foundation checkpoint
+## Decisions and report checkpoint
 
-The app shell and fixture contract are green. Domain specifications are intentionally red and
-fail only at typed `DOMAIN_NOT_IMPLEMENTED` boundaries. That is the expected tests-first state
-before the domain-engine checkpoint. CI asserts those exact typed boundaries without treating
-the intentionally red suite as a release failure.
+The app shell, fixture contract, domain engine, and manual review workspace are green. Loading
+the bundled synthetic plan shows exclusive change counts, seven findings, a dependency graph with
+an accessible table, a redacted resource inspector, and an approval queue that waits for a human
+decision.
+
+The same session backs a focused native WebMCP catalog. Browsers without `document.modelContext`
+or `navigator.modelContext` show a visible fallback and keep the manual workflow. Agent tool
+calls append audit events; they do not apply infrastructure.
+
+Engineers accept, reject, or defer recommended mitigations. The overlay replays accepted
+operations on a copy of the plan and can conclude that a change is ready for a new plan. It
+cannot apply infrastructure. Reset requires confirmation. The JSON report is a download, not an
+apply path. CI runs `bun run test` and Playwright after the production build.
+
+Enable `chrome://flags/#enable-webmcp-testing` to register native tools. Without that flag,
+the manual panels remain the review path.
 
 ```bash
 bun install --frozen-lockfile
+bunx playwright install --with-deps chromium
 bun run check:foundation  # expected to pass
-bun run test:red          # expected to fail in this checkpoint
+bun run test:red          # expected to pass
 bun run dev
 ```
 

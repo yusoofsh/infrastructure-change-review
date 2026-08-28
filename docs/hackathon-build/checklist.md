@@ -11,25 +11,25 @@ Mode: autonomous, with verification after every three to four items or sooner wh
 
 ## Domain engine — August 28
 
-- [ ] Normalize plan actions and redact sensitive or unknown values.
-- [ ] Extract configuration references and build the dependency graph.
-- [ ] Calculate direct and transitive blast radius.
-- [ ] Implement all seven deterministic risk rules and mitigation options.
+- [x] Normalize plan actions and redact sensitive or unknown values.
+- [x] Extract configuration references and build the dependency graph.
+- [x] Calculate direct and transitive blast radius.
+- [x] Implement all seven deterministic risk rules and mitigation options.
 
 ## Product interface — August 29
 
-- [ ] Build the empty state, summary, findings, graph, inspector, and approval queue shell.
-- [ ] Complete the manual analysis workflow and accessible graph table fallback.
+- [x] Build the empty state, summary, findings, graph, inspector, and approval queue shell.
+- [x] Complete the manual analysis workflow and accessible graph table fallback.
 
 ## WebMCP — August 30
 
-- [ ] Register the focused tool catalog with schemas, preconditions, and audit events.
-- [ ] Verify unsupported-browser fallback and visible UI synchronization.
+- [x] Register the focused tool catalog with schemas, preconditions, and audit events.
+- [x] Verify unsupported-browser fallback and visible UI synchronization.
 
 ## Decisions and report — August 31
 
-- [ ] Add human-only decisions, overlay simulation, deterministic outcomes, and report download.
-- [ ] Complete the first Playwright review journey.
+- [x] Add human-only decisions, overlay simulation, deterministic outcomes, and report download.
+- [x] Complete the first Playwright review journey.
 
 ## Hardening and delivery — September 1–3
 

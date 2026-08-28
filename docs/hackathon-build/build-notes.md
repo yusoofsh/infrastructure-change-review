@@ -56,3 +56,41 @@
 - A separate, serialized GitHub Actions production workflow performs Pages Direct Uploads from
   `main` only after the full foundation gate passes. It fails visibly rather than provisioning
   a missing project or silently skipping deployment when credentials are absent.
+
+## 2026-08-27 — Domain engine checkpoint
+
+- Terraform changes now normalize with exclusive counts and recursive sensitive-value redaction.
+- Configuration references drive deterministic blast-radius scoring and seven ordered risk rules.
+- Mitigation options are registry-backed, and the domain specification is a foundation and CI gate.
+
+## 2026-08-27 — Product interface checkpoint
+
+- The review workspace starts empty. Loading the bundled synthetic plan fills summary, findings,
+  graph, inspector, and approval-queue panels from the domain engine.
+- Plan-derived strings render as text. The worker-tag injection payload stays escaped.
+- The dependency graph ships a visible edge list and a configuration-dependencies table.
+- Mitigation options appear as a human-decision queue. Nothing is applied.
+- `bun run test` is the release gate and includes the review-session and review-shell specs.
+
+## 2026-08-27 — WebMCP checkpoint
+
+- App and tools share one review session. Native registration uses `document.modelContext`, then
+  `navigator.modelContext`. There is no fake polyfill.
+- The catalog is seven tools: load, summary, findings, select finding, inspect resource, list
+  dependencies, and list mitigations. Schemas and annotations are static. Unknown addresses and
+  findings fail closed without echoing untrusted input.
+- Unsupported browsers show a WebMCP fallback and keep the manual panels. Agent calls append
+  visible audit events. Manual load does not create audit events.
+- No apply, approve, reset, or Terraform execution tool is registered.
+- `bun run test` includes the WebMCP catalog, registration, and shell specs.
+
+## 2026-08-27 — Decisions and report checkpoint
+
+- Human reviewers accept, reject, or defer recommended mitigations. Agents can read those
+  decisions and the report; they cannot record them or reset the session.
+- The overlay replays accepted operations on a copy of the plan. It can conclude that a change
+  is ready for a new plan. It never concludes that a change is ready to apply.
+- Reset requires an in-UI confirmation. The JSON report omits secrets and has no apply path.
+- The S3 restore mitigation also cancels the public bucket-policy change so AWS002 can clear.
+- Playwright covers load → decide → overlay → download. `bun run check:foundation` runs that
+  journey after the production build.
